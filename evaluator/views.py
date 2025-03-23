@@ -7,10 +7,9 @@ import shutil
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse
 
 from .forms import CustomUserCreationForm
+from django.contrib import messages
 
 #Registration view
 def register(request):
@@ -19,16 +18,24 @@ def register(request):
         if form.is_valid():
             user = form.save(commit=False)
             full_name = form.cleaned_data.get('full_name')
-            
-            # Splitting full name into first & last name
+
+            # Splitting Full Name into First & Last Name
             name_parts = full_name.split()
             user.first_name = name_parts[0]
             user.last_name = " ".join(name_parts[1:]) if len(name_parts) > 1 else ""
-            
+
             user.save()
-            return redirect('login')
+
+            # Show success message
+            messages.success(request, 'Your account has been successfully created! You can now log in.')
+
+            return render(request, 'register.html', {'form': CustomUserCreationForm(), 'delay_redirect': True})
+        else:
+            # Show error message
+            messages.error(request, 'Registration failed! Please check the form and try again.')
     else:
         form = CustomUserCreationForm()
+
     return render(request, 'register.html', {'form': form})
 
 # Login View
