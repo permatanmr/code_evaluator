@@ -73,35 +73,6 @@
         <form method="post">
           {% csrf_token %}
 
-          <!-- Full Name Field -->
-          <div class="mb-3">
-            <label class="form-label">Full Name</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-              <input
-                type="text"
-                name="full_name"
-                class="form-control"
-                required
-                placeholder="Enter your full name"
-              />
-            </div>
-          </div>
-
-          <!-- Username Field -->
-          <div class="mb-3">
-            <label class="form-label">Username</label>
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-user-circle"></i
-              ></span>
-              {{ form.username }}
-            </div>
-            {% if form.username.errors %}
-            <div class="text-danger">{{ form.username.errors.0 }}</div>
-            {% endif %}
-          </div>
-
           <!-- Email Field -->
           <div class="mb-3">
             <label class="form-label">Email</label>
@@ -115,6 +86,21 @@
                 class="form-control"
                 required
                 placeholder="Enter your email"
+              />
+            </div>
+          </div>
+
+          <!-- Full Name Field -->
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+              <input
+                type="text"
+                name="full_name"
+                class="form-control"
+                required
+                placeholder="Enter your full name"
               />
             </div>
           </div>

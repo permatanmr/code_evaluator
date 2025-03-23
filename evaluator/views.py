@@ -39,17 +39,31 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 # Login View
+from .forms import EmailAuthenticationForm
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect('exam_index')
+        form = EmailAuthenticationForm(data=request.POST)
+        if form.is_valid():
+            print('aku padamuuu 1')
+            username = form.cleaned_data['username']  # Django's default field is still called "username"
+            password = form.cleaned_data['password']
+            user = authenticate(request, email=username, password=password)
+            print('aku padamuuu 2')
+            if user is not None:
+                login(request, user)
+                # messages.success(request, "Login successful!")
+                return redirect('exam_index')  # Redirect to a protected page
+            else:
+                print("error email or password")
+                messages.error(request, "Invalid email or password.")
         else:
-            return render(request, 'login.html', {'error': 'Invalid credentials'})
-    return render(request, 'login.html')
+             print('Form error')
+             print(form.errors)
+             messages.error(request, form.errors)
+    else:
+        form = EmailAuthenticationForm()
+
+    return render(request, 'login.html', {'form': form})
 
 # Logout View
 def logout_view(request):

@@ -44,7 +44,7 @@
   </head>
   <body class="container mt-5">
     <h2 class="text-center">Exam Code Evaluator</h2>
-    <p>Welcome, {{ request.user.username }}!</p>
+    <p>Welcome, {{ request.user.email }}!</p>
     <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
     <br><br><br>
 
