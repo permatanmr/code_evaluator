@@ -10,15 +10,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 
-# Registration View
+from .forms import CustomUserCreationForm
+
+#Registration view
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            full_name = form.cleaned_data.get('full_name')
+            
+            # Splitting full name into first & last name
+            name_parts = full_name.split()
+            user.first_name = name_parts[0]
+            user.last_name = " ".join(name_parts[1:]) if len(name_parts) > 1 else ""
+            
+            user.save()
             return redirect('login')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
 
 # Login View
@@ -43,10 +53,6 @@ def logout_view(request):
 @login_required
 def exam_index(request):
     return render(request, 'index.html')
-
-
-def home(request):
-    return render(request, "home.html")
 
 # @csrf_exempt  # REMOVE THIS IN PRODUCTION (Use proper CSRF handling instead)
 def run_code(request):
