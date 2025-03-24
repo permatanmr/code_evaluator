@@ -143,8 +143,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = 'exam_index'  # Redirect after login
-LOGOUT_REDIRECT_URL = 'login'  # Redirect after logout
+LOGIN_REDIRECT_URL = 'exam_list'  # Redirect after login
+LOGOUT_REDIRECT_URL = 'exam_list'  # Redirect after logout
 
 AUTH_USER_MODEL = 'evaluator.CustomUser'
 

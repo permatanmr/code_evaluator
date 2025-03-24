@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .forms import CustomUserCreationForm
-from .models import Exam
+from .models import Exam, Question
 from django.contrib import messages
 
 #Registration view
@@ -51,7 +51,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 # messages.success(request, "Login successful!")
-                return redirect('exam_index')  # Redirect to a protected page
+                return redirect('exam_list')  # Redirect to a protected page
             else:
                 print("error email or password")
                 messages.error(request, "Invalid email or password.")
@@ -71,8 +71,16 @@ def logout_view(request):
 
 # Exam Page (Restricted)
 @login_required
-def exam_index(request):
-    return render(request, 'index.html')
+def exam_take(request, code):
+    questions = Question.objects.filter(exam__exam_code = code)
+    exam_detail = get_object_or_404(Exam, exam_code=code)
+    print(questions)
+    print(exam_detail)
+    context = {
+        'questions': questions,
+        'exam_detail': exam_detail
+    }
+    return render(request, 'index.html', context)
 
 # @csrf_exempt  # REMOVE THIS IN PRODUCTION (Use proper CSRF handling instead)
 def run_code(request):
