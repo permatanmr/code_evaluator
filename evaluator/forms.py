@@ -37,6 +37,13 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ["full_name", "email", "password1", "password2"]
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = 'student'  # Default role
+        if commit:
+            user.save()
+        return user
+
 
 from django.contrib.auth.forms import AuthenticationForm
 

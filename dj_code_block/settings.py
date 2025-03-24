@@ -136,3 +136,6 @@ LOGIN_REDIRECT_URL = 'exam_index'  # Redirect after login
 LOGOUT_REDIRECT_URL = 'login'  # Redirect after logout
 
 AUTH_USER_MODEL = 'evaluator.CustomUser'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

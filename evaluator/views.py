@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .forms import CustomUserCreationForm
+from .models import Exam
 from django.contrib import messages
 
 #Registration view
@@ -44,11 +45,9 @@ def login_view(request):
     if request.method == 'POST':
         form = EmailAuthenticationForm(data=request.POST)
         if form.is_valid():
-            print('aku padamuuu 1')
             username = form.cleaned_data['username']  # Django's default field is still called "username"
             password = form.cleaned_data['password']
             user = authenticate(request, email=username, password=password)
-            print('aku padamuuu 2')
             if user is not None:
                 login(request, user)
                 # messages.success(request, "Login successful!")
@@ -109,3 +108,7 @@ def run_code(request):
             return JsonResponse({"result": "fail", "output": str(e)})
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+def exam_list(request):
+    exams = Exam.objects.all()  # Fetch all exams
+    return render(request, 'exam_list.html', {'exams': exams})
