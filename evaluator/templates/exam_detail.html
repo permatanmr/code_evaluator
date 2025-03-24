@@ -31,21 +31,21 @@
         {% else %}
         <img
           src="{% static 'images/empty-photo.jpg' %}"
-          class="card-img-top fixed-image"
+          class="card-img-top fixed-image p-4"
           alt="No Photo Available"
         />
         {% endif %}
 
-        <div class="col-8 card-body">
+        <div class="card-body">
           <p class="card-text">{{ exam.description }}</p>
-          <div class="row w-100">
-            <div class="col-8">
+          <div class="row">
+            <div class="col text-start">
               <a href="{% url 'exam_list' %}" class="btn btn-primary"
                 >Back to Exams</a
               >
             </div>
 
-            <div class="col-4">
+            <div class="col text-end">
               <a href="{% url 'take_exam' exam.exam_code %}" class="btn btn-primary"
                 >TAKE EXAM</a
               >

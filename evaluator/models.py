@@ -53,9 +53,9 @@ class Exam(models.Model):
 class Question(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name='questions')
     ROLE_CHOICES = (
-        ('admin', 'Admin'),
-        ('teacher', 'Teacher'),
-        ('student', 'Student'),
+        ('Python', 'Python'),
+        ('Javascript', 'Javascript'),
+        ('Dart', 'Dart'),
     )
     programming_language = models.CharField(max_length=50, choices=ROLE_CHOICES)
     question_code = models.TextField()

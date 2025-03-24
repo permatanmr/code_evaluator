@@ -67,7 +67,7 @@ def login_view(request):
 # Logout View
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('exam_list')
 
 # Exam Page (Restricted)
 @login_required
@@ -80,7 +80,7 @@ def exam_take(request, code):
         'questions': questions,
         'exam_detail': exam_detail
     }
-    return render(request, 'index.html', context)
+    return render(request, 'take_exam.html', context)
 
 # @csrf_exempt  # REMOVE THIS IN PRODUCTION (Use proper CSRF handling instead)
 def run_code(request):
