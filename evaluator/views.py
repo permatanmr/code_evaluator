@@ -1,6 +1,6 @@
 import subprocess
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 import shutil
 
 
@@ -112,3 +112,7 @@ def run_code(request):
 def exam_list(request):
     exams = Exam.objects.all()  # Fetch all exams
     return render(request, 'exam_list.html', {'exams': exams})
+
+def exam_detail(request, code):
+    exam = get_object_or_404(Exam, exam_code=code)
+    return render(request, 'exam_detail.html', {'exam': exam})

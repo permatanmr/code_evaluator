@@ -52,10 +52,15 @@ class Exam(models.Model):
 
 class Question(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name='questions')
+    ROLE_CHOICES = (
+        ('admin', 'Admin'),
+        ('teacher', 'Teacher'),
+        ('student', 'Student'),
+    )
+    programming_language = models.CharField(max_length=50, choices=ROLE_CHOICES)
     question_code = models.TextField()
     answer_code = models.TextField()
     expected_result = models.TextField()
-    programming_language = models.CharField(max_length=50)
     description = models.TextField()
 
     def __str__(self):
