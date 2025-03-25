@@ -58,10 +58,10 @@ class Question(models.Model):
         ('Dart', 'Dart'),
     )
     programming_language = models.CharField(max_length=50, choices=ROLE_CHOICES)
+    description = models.TextField()
     question_code = models.TextField()
     answer_code = models.TextField()
     expected_result = models.TextField()
-    description = models.TextField()
 
     def __str__(self):
         return f"Question for {self.exam.exam_name}"

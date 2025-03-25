@@ -68,6 +68,10 @@
         font-size: 16px;
         border: 1px solid #ced4da;
       }
+
+      .hidden {
+        display: none
+      }
     </style>
   </head>
   <body class="container mt-5">
@@ -85,9 +89,13 @@
     <div
       id="question-{{ q.id }}"
       class="question-box"
-      onclick="toggleActiveBox('question-{{ q.id }}', '{{q.question_code}}', '{{forloop.counter}}')"
+      onclick="toggleActiveBox('question-{{ q.id }}', '{{q.description}}', '{{forloop.counter}}')"
     >
       <h5 class="m-0">{{ forloop.counter }}</h5>
+      <input type="hidden" id="prog-{{forloop.counter}}" value="{{q.programming_language}}" />
+      <input type="hidden" id="description-{{forloop.counter}}" value="{{q.description}}" />
+      <input type="hidden" id="qid-{{forloop.counter}}" value="{{q.id}}" />
+      <input type="hidden" id="question_code-{{forloop.counter}}" value="{{q.question_code}}" />
   </div>
     {% endfor %} 
 </div>
@@ -99,12 +107,12 @@
       <div class="card-body">
         <h5 class="m-0" id="question-number"></h5>
         <p id="examQuestion">
-          <strong>Write a function to find the square of a number.</strong>
+          <strong></strong>
         </p>
         <input type="hidden" id="expectedOutput" value="25" />
 
-        <label for="language" class="form-label">Choose Language:</label>
-        <select id="language" class="form-select mb-3">
+        <label for="language" class="form-label"></label>
+        <select type="hidden" id="language" class="form-select mb-3 hidden">
           <option value="python">Python</option>
           <option value="javascript">JavaScript</option>
           <option value="dart">Dart</option>
@@ -247,6 +255,11 @@
             outputDiv.textContent = "Error connecting to server.";
           });
       });
+
+      document.getElementById("question-1").classList.add("active-box");
+      document.getElementById("question-number").textContent = 'Question 1'
+      document.getElementById("examQuestion").textContent = document.getElementById("description-1").value;
+
     </script>
   </body>
 </html>
