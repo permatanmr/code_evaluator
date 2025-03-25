@@ -21,8 +21,6 @@
     <script>
       // JavaScript function to handle active selection
       function toggleActiveBox(id, question, counter) {
-        console.log(id);
-        console.log(question)
         document.querySelectorAll(".question-box").forEach((box) => {
           box.classList.remove("active-box");
 
@@ -30,6 +28,7 @@
         document.getElementById(id).classList.add("active-box");
         document.getElementById("examQuestion").textContent = question;
         document.getElementById("question-number").textContent = 'Question '+counter
+        editor.setValue(document.getElementById("question_code-"+counter).value)
       }
     </script>
 
@@ -259,6 +258,7 @@
       document.getElementById("question-1").classList.add("active-box");
       document.getElementById("question-number").textContent = 'Question 1'
       document.getElementById("examQuestion").textContent = document.getElementById("description-1").value;
+      editor.setValue(document.getElementById("question_code-1").value)
 
     </script>
   </body>
