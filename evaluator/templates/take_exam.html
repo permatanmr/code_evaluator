@@ -25,10 +25,20 @@
         document.querySelectorAll(".question-box").forEach((box) => {
           box.classList.remove("active-box");
         });
+        // kasih if finished --> green 
         document.getElementById(q_idx).classList.add("active-box");
         document.getElementById("examQuestion").textContent = question;
         document.getElementById("question-number").textContent = 'Question '+counter
+        let outputDiv = document.getElementById("output");
+        outputDiv.classList.remove(
+          "alert-success",
+          "alert-danger",
+          "alert-secondary"
+        );
+        outputDiv.classList.add("alert-secondary");
+        outputDiv.textContent = "Awaiting submission..."
         editor.setValue(document.getElementById("question_code-"+counter).value)
+        displayError.style.opacity = 0;
         activeBox = qid
       }
     </script>
@@ -123,6 +133,7 @@
       <input type="hidden" id="description-{{forloop.counter}}" value="{{q.description}}" />
       <input type="hidden" id="qid-{{forloop.counter}}" value="{{q.id}}" />
       <input type="hidden" id="question_code-{{forloop.counter}}" value="{{q.question_code}}" />
+      <input type="hidden" id="status-{{forloop.counter}}" value="not finished" />
   </div>
     {% endfor %} 
 </div>
@@ -241,7 +252,7 @@
             encodeURIComponent(code) +
             "&language=" +
             encodeURIComponent(language) +
-            "&qid="+activeBox+
+            "&qid="+document.getElementById("qid-"+activeBox).value+
             "&expected_output=" +
             encodeURIComponent(expectedOutput),
         })
@@ -252,7 +263,9 @@
               outputDiv.classList.add("alert-success");
               outputDiv.textContent =
                 "✅ Pass! Output matched expected result.";
-                displayError.style.opacity = 0;
+              displayError.style.opacity = 0;
+              document.getElementById("status-"+activeBox).textContent = "finished";
+              document.getElementById("question-"+activeBox).classList.add("finished-box");
             } else {
               console.log(data.output)
               outputDiv.classList.add("alert-danger");
