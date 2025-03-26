@@ -19,16 +19,17 @@
     />
 
     <script>
+      activeBox = 1;
       // JavaScript function to handle active selection
-      function toggleActiveBox(id, question, counter) {
+      function toggleActiveBox(q_idx, question, counter, qid) {
         document.querySelectorAll(".question-box").forEach((box) => {
           box.classList.remove("active-box");
-
         });
-        document.getElementById(id).classList.add("active-box");
+        document.getElementById(q_idx).classList.add("active-box");
         document.getElementById("examQuestion").textContent = question;
         document.getElementById("question-number").textContent = 'Question '+counter
         editor.setValue(document.getElementById("question_code-"+counter).value)
+        activeBox = qid
       }
     </script>
 
@@ -43,7 +44,7 @@
       .question-box {
         width: 50px; /* Fixed width */
         height: 50px; /* Fixed height */
-        border: 2px solid #ddd;
+        border: 2px solid #DDD;
         border-radius: 10px;
         padding: 15px;
         margin:3px;
@@ -56,10 +57,14 @@
       }
 
       /* Active state */
-      .active-box {
+      .finished-box {
         border-color: #00ADB5;
         background-color: #00ADB5;
         color: #FFF;
+      }
+
+      .active-box {
+        border-color: #00ADB5;
       }
 
       .CodeMirror {
@@ -70,6 +75,12 @@
 
       .hidden {
         display: none
+      }
+
+      .ButtonGreen {
+        background-color: #00ADB5;
+        color: #FFF;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -88,7 +99,7 @@
     <div
       id="question-{{ q.id }}"
       class="question-box"
-      onclick="toggleActiveBox('question-{{ q.id }}', '{{q.description}}', '{{forloop.counter}}')"
+      onclick="toggleActiveBox('question-{{ q.id }}', '{{q.description}}', '{{forloop.counter}}', {{q.id}})"
     >
       <h5 class="m-0">{{ forloop.counter }}</h5>
       <input type="hidden" id="prog-{{forloop.counter}}" value="{{q.programming_language}}" />
@@ -120,7 +131,7 @@
         <textarea id="codeInput"></textarea>
 
         <div class="text-center mt-3">
-          <button type="submit" class="btn btn-success btn-lg" id="runCode">
+          <button type="submit" class="btn btn-lg ButtonGreen" id="runCode">
             Submit Exam
           </button>
         </div>
@@ -207,7 +218,7 @@
         });
       }); {% endcomment %}
 
-      document.getElementById("runCode").addEventListener("click", function () {
+      document.getElementById("runCode").addEventListener("click", function (btnSubmit) {
         let code = editor.getValue();
         let csrfToken = getCSRFToken();
         let language = document.getElementById("language").value;
@@ -222,6 +233,13 @@
         outputDiv.classList.add("alert-secondary");
         outputDiv.textContent = "Evaluating...";
 
+        console.log("code=" +
+            encodeURIComponent(code) +
+            "&language=" +
+            encodeURIComponent(language) +
+            "&expected_output=" +
+            encodeURIComponent(expectedOutput))
+
         fetch("/evaluate/", {
           method: "POST",
           headers: {
@@ -233,6 +251,7 @@
             encodeURIComponent(code) +
             "&language=" +
             encodeURIComponent(language) +
+            "&qid="+activeBox+
             "&expected_output=" +
             encodeURIComponent(expectedOutput),
         })
@@ -245,7 +264,7 @@
                 "✅ Pass! Output matched expected result.";
             } else {
               outputDiv.classList.add("alert-danger");
-              outputDiv.textContent = "❌ Fail! Output did not match.";
+              outputDiv.textContent = "❌ Fail! Output did not match.\n";
             }
           })
           .catch((error) => {

@@ -86,8 +86,10 @@ def exam_take(request, code):
 def run_code(request):
     if request.method == "POST":
         code = request.POST.get("code", "")
-        language = request.POST.get("language", "python")
-        expected_output = request.POST.get("expected_output", "").strip()
+        qid = request.POST.get("qid","")
+        question_detail = get_object_or_404(Question, id=qid)
+        language = question_detail.programming_language
+        expected_output = question_detail.expected_result.strip()
 
         # Check if Dart is installed
         dart_path = shutil.which("dart")  
@@ -107,6 +109,7 @@ def run_code(request):
         try:
             result = subprocess.run(command, capture_output=True, text=True, timeout=5)
             output = result.stdout.strip() or result.stderr.strip()
+            print(output)
 
             if output == expected_output:
                 return JsonResponse({"result": "pass", "output": output})
