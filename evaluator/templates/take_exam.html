@@ -78,9 +78,26 @@
       }
 
       .ButtonGreen {
-        background-color: #00ADB5;
-        color: #FFF;
-        cursor: pointer;
+        background-color: #00ADB5; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 20px;
+        border-radius: 15px;
+      }
+
+      #output-container {
+        margin: 0px 15px;
+      }
+
+      #output-detail{
+        border: 2px solid #DEDEDE;
+        border-radius: 2px;
+        padding: 30px 30px;
+        margin: 10px 0px 30px 0px;
       }
     </style>
   </head>
@@ -131,17 +148,21 @@
         <textarea id="codeInput"></textarea>
 
         <div class="text-center mt-3">
-          <button type="submit" class="btn btn-lg ButtonGreen" id="runCode">
+          <div type="submit" class="ButtonGreen" id="runCode">
             Submit Exam
           </button>
         </div>
       </div>
     </div>
 
+    <div id="output-container">
     <h3 class="mt-4">Result:</h3>
     <div id="output" class="alert alert-secondary" role="alert">
       Awaiting submission...
     </div>
+    <div id="output-detail">
+    </div>
+  </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -189,41 +210,17 @@
           }
         });
 
-      // Question selection logic
-      {% comment %} document.querySelectorAll(".question-box").forEach((box) => {
-        box.addEventListener("click", function () {
-          document
-            .querySelectorAll(".question-box")
-            .forEach((b) => b.classList.remove("active"));
-          this.classList.add("active");
-
-          let selectedQuestion = this.getAttribute("data-question");
-          let questionText = "";
-          let expectedOutput = "";
-
-          if (selectedQuestion === "square") {
-            questionText = "Write a function to find the square of a number.";
-            expectedOutput = "25"; // Example input: 5
-          } else if (selectedQuestion === "factorial") {
-            questionText =
-              "Write a function to find the factorial of a number.";
-            expectedOutput = "120"; // Example input: 5
-          } else if (selectedQuestion === "reverse") {
-            questionText = "Write a function to reverse a string.";
-            expectedOutput = "olleH"; // Example input: "Hello"
-          }
-
-          document.getElementById("examQuestion").textContent = questionText;
-          document.getElementById("expectedOutput").value = expectedOutput;
-        });
-      }); {% endcomment %}
-
       document.getElementById("runCode").addEventListener("click", function (btnSubmit) {
         let code = editor.getValue();
         let csrfToken = getCSRFToken();
         let language = document.getElementById("language").value;
         let expectedOutput = document.getElementById("expectedOutput").value;
         let outputDiv = document.getElementById("output");
+
+        let buttonSubmit = document.getElementById("runCode");
+        let displayError = document.getElementById("output-detail");
+        buttonSubmit.style.opacity = 0.2;
+        displayError.style.opacity = 0;
 
         outputDiv.classList.remove(
           "alert-success",
@@ -232,13 +229,6 @@
         );
         outputDiv.classList.add("alert-secondary");
         outputDiv.textContent = "Evaluating...";
-
-        console.log("code=" +
-            encodeURIComponent(code) +
-            "&language=" +
-            encodeURIComponent(language) +
-            "&expected_output=" +
-            encodeURIComponent(expectedOutput))
 
         fetch("/evaluate/", {
           method: "POST",
@@ -262,15 +252,23 @@
               outputDiv.classList.add("alert-success");
               outputDiv.textContent =
                 "✅ Pass! Output matched expected result.";
+                displayError.style.opacity = 0;
             } else {
+              console.log(data.output)
               outputDiv.classList.add("alert-danger");
               outputDiv.textContent = "❌ Fail! Output did not match.\n";
+              document.getElementById("output-detail").textContent = data.output
+              displayError.style.opacity = 1;
             }
+            buttonSubmit.style.opacity = 1;
+            
           })
           .catch((error) => {
             outputDiv.classList.remove("alert-secondary");
             outputDiv.classList.add("alert-danger");
-            outputDiv.textContent = "Error connecting to server.";
+            outputDiv.textContent = "Error from server.\n"+error;
+            buttonSubmit.style.opacity = 1;
+            displayError.style.opacity = 1;
           });
       });
 
@@ -278,6 +276,8 @@
       document.getElementById("question-number").textContent = 'Question 1'
       document.getElementById("examQuestion").textContent = document.getElementById("description-1").value;
       editor.setValue(document.getElementById("question_code-1").value)
+      let displayError = document.getElementById("output-detail");
+      displayError.style.opacity = 0;
 
     </script>
   </body>
