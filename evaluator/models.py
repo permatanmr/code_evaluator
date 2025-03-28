@@ -45,6 +45,7 @@ class Exam(models.Model):
     exam_code = models.CharField(max_length=50, unique=True)  # ✅ Unique exam code
     description = models.TextField()
     image = models.ImageField(upload_to='exam_images/', blank=True, null=True)
+    duration_in_minutes = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.exam_name} ({self.exam_code})"

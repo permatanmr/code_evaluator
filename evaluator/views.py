@@ -76,9 +76,11 @@ def exam_take(request, code):
     exam_detail = get_object_or_404(Exam, exam_code=code)
     print(questions)
     print(exam_detail)
+    print(request.user)
     context = {
         'questions': questions,
-        'exam_detail': exam_detail
+        'exam_detail': exam_detail,
+        'user': request.user
     }
     return render(request, 'take_exam.html', context)
 
