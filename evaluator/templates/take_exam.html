@@ -21,13 +21,14 @@
     <script>
       activeBox = 1;
       // JavaScript function to handle active selection
-      function toggleActiveBox(q_idx, question, counter, qid) {
+      function toggleActiveBox(counter, qid) {
         document.querySelectorAll(".question-box").forEach((box) => {
           box.classList.remove("active-box");
         });
+        console.log('halo1');
         // kasih if finished --> green 
-        document.getElementById(q_idx).classList.add("active-box");
-        document.getElementById("examQuestion").textContent = question;
+        document.getElementById("question-"+counter).classList.add("active-box");
+        document.getElementById("examQuestion").textContent = document.getElementById("description-"+counter).value;
         document.getElementById("question-number").textContent = 'Question '+counter
         let outputDiv = document.getElementById("output");
         outputDiv.classList.remove(
@@ -39,7 +40,7 @@
         outputDiv.textContent = "Awaiting submission..."
         editor.setValue(document.getElementById("question_code-"+counter).value)
         displayError.style.opacity = 0;
-        activeBox = qid
+        activeBox = counter
       }
     </script>
 
@@ -118,6 +119,7 @@
     <br /><br /><br />
 
     <!-- Exam Code Evaluation Content Here -->
+     <input type="hidden" id="q_length" value={{questions | length}} />
     <!-- Question Selection -->
     {% if questions %} 
     </div>
@@ -126,7 +128,7 @@
     <div
       id="question-{{ q.id }}"
       class="question-box"
-      onclick="toggleActiveBox('question-{{ q.id }}', '{{q.description}}', '{{forloop.counter}}', {{q.id}})"
+      onclick="toggleActiveBox('{{forloop.counter}}', {{q.id}})"
     >
       <h5 class="m-0">{{ forloop.counter }}</h5>
       <input type="hidden" id="prog-{{forloop.counter}}" value="{{q.programming_language}}" />
@@ -259,13 +261,23 @@
           .then((response) => response.json())
           .then((data) => {
             outputDiv.classList.remove("alert-secondary");
-            if (data.result === "pass") {
+            if (data.result === "pass") {           
               outputDiv.classList.add("alert-success");
               outputDiv.textContent =
                 "✅ Pass! Output matched expected result.";
               displayError.style.opacity = 0;
               document.getElementById("status-"+activeBox).textContent = "finished";
               document.getElementById("question-"+activeBox).classList.add("finished-box");
+              //goto active next box
+              let q_length = document.getElementById("q_length").value;
+              console.log(activeBox+":"+q_length)
+              if((activeBox) >= document.getElementById("q_length").value){
+                alert('Selamat completed semua test!')
+              }else{
+                setTimeout(() => {
+                  toggleActiveBox(activeBox+1, document.getElementById("qid-"+(activeBox+1)).value)
+                }, "1000");
+              }   
             } else {
               console.log(data.output)
               outputDiv.classList.add("alert-danger");
